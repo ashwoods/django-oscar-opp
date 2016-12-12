@@ -1,0 +1,32 @@
+<script>
+var wpwlOptions = {
+    style: "plain",
+    locale: "{{locale}}",
+    billingAddress: {
+        country: "{{ address.country }}",
+        state: "{{ address.state }}",
+        city: "{{ address.city }}",
+        street1: "{{ address.street_1 }}",
+        street2: "{{ address.street_2 }}",
+        postcode: "{{ address.postcode }}"
+    },
+    forceCardHolderEqualsBillingName: true,
+    showCVVHint: true,
+    brandDetection: true,
+
+onReady: function(){
+    $(".wpwl-group-cardNumber").after($(".wpwl-group-brand").detach());
+    $(".wpwl-group-cvv").after( $(".wpwl-group-cardHolder").detach());
+    var visa = $(".wpwl-brand:first").clone().removeAttr("class").attr("class", "wpwl-brand-card wpwl-brand-custom wpwl-brand-VISA")
+    var master = $(visa).clone().removeClass("wpwl-brand-VISA").addClass("wpwl-brand-MASTER");
+    $(".wpwl-brand:first").after( $(master)).after( $(visa));
+},
+onChangeBrand: function(e) {
+    $(".wpwl-brand-custom").css("opacity", "0.3");
+    $(".wpwl-brand-" + e).css("opacity", "1");
+    }
+}
+</script>
+<script async src="https://test.oppwa.com/v1/paymentWidgets.js?checkoutId={{checkout_id}}"></script>
+
+<form action="{{ callback_url }}" class="paymentWidgets">VISA MASTER AMEX</form>
