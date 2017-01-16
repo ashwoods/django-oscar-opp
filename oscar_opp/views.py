@@ -59,7 +59,6 @@ class PaymentDetailsView(views.PaymentDetailsView):
         # Ensure newly instantiated instances of the bankcard and billing
         # address forms are passed to the template context (when they aren't
         # already specified).
-        import ipdb; ipdb.set_trace()
         facade = Facade()
         facade.prepare_checkout(D(10), 'EUR')
         ctx['form'] = facade.get_form(locale='de')
