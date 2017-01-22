@@ -21,16 +21,16 @@ class Facade(object):
         )
         if checkout_id:
             self.transaction = Transaction.objects.get(
-                correlation_id=checkout_id
+                checkout_id=checkout_id,
             )
         else:
             self.transaction = None
 
-    def prepare_checkout(self, amount, currency):
+    def prepare_checkout(self, amount, currency, correlation_id=None):
         if not self.transaction:
             response = self.gateway.get_checkout_id(
-                amount=D(10),
-                currency='EUR',
+                amount=D(amount),
+                currency=currency,
                 payment_type='DB'
             )
             self.transaction = Transaction(
@@ -38,11 +38,12 @@ class Facade(object):
                 currency=currency,
                 raw_request=response.request.body,
                 raw_response=response.content,
-                response_time=response.elapsed.total_seconds() * 1000
-
+                response_time=response.elapsed.total_seconds() * 1000,
+                correlation_id=correlation_id,
             )
             if response.ok:
                 self.transaction.checkout_id = response.json().get('id')
+                self.transaction.result_code = response.json().get('result')['code']
             else:
                 # add error handling
                 pass
@@ -53,11 +54,15 @@ class Facade(object):
                 "This instance is already linked to a Transaction"
             )
 
-    def get_form(self, locale, address=None):
+    def get_payment_status(self):
+        return self.gateway.get_payment_status(self.transaction.checkout_id)
+
+    def get_form(self, callback, locale, address=None):
         ctx = {
             'checkout_id': self.transaction.checkout_id,
             'locale': locale,
             'address': address,
+            'callback': callback,
         }
         template = get_template('oscar_opp/form.html')
         return template.render(ctx)

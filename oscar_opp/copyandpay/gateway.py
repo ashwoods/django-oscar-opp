@@ -70,9 +70,8 @@ class Gateway(object):
         return response
 
     def get_payment_status(self, checkout_id):
-
         response = requests.get(
             parse.urljoin(self.host, self.CHECKOUTS_DETAIL_ENDPOINT.format(checkout_id=checkout_id))
         )
-        return response
+        return response.status_code
 

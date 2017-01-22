@@ -25,7 +25,7 @@ class Transaction(base.ResponseModel):
     amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     currency = models.CharField(max_length=8, null=True, blank=True)
 
-    # ack = models.CharField(max_length=32)
+    result_code = models.CharField(max_length=32)
     checkout_id = models.CharField(max_length=48, unique=True, null=True, editable=False)
     correlation_id = models.CharField(max_length=32, unique=True, null=True, editable=False)
 
@@ -37,9 +37,7 @@ class Transaction(base.ResponseModel):
         ordering = ('-date_created',)
 
     def __str__(self):
-        pass
-        #return 'method: %s: token: %s' % (
-        #    self.method, self.token)
+        return "Transaction %s" % self.id
 
     def save(self, *args, **kwargs):
         for regex, s in self.CLEAN_REGEX:
