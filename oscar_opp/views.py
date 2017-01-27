@@ -62,8 +62,13 @@ class PaymentDetailsView(views.PaymentDetailsView):
         checkout_id = request.GET.get('id')
         order_number = request.GET.get('order')
         if checkout_id and order_number:
-            # skip all checkout paths and continue handling payment
-            return self.handle_payment(request, order_number, checkout_id)
+            # make sure the basket in the request is still frozen
+            if self.request.basket.status == Basket.FROZEN:
+                # skip all checkout paths and continue handling payment
+                return self.handle_payment(request, order_number, checkout_id)
+            else:
+                # something very bad happened
+                raise UnableToTakePayment
         else:
             return super(PaymentDetailsView, self).dispatch(request, *args, **kwargs)
 
@@ -170,3 +175,5 @@ class PaymentDetailsView(views.PaymentDetailsView):
         Applicator().apply(request=self.request, basket=basket)
 
         return basket
+
+

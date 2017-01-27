@@ -21,13 +21,12 @@ class Transaction(base.ResponseModel):
         (r'entityID=\w+&', 'entityID=XXXXXX&')
     ]
 
-
     amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     currency = models.CharField(max_length=8, null=True, blank=True)
 
     result_code = models.CharField(max_length=32)
     checkout_id = models.CharField(max_length=48, unique=True, null=True, editable=False)
-    correlation_id = models.CharField(max_length=32, unique=True, null=True, editable=False)
+    correlation_id = models.CharField(max_length=32, null=True, editable=False)
 
     error_code = models.CharField(max_length=32, null=True, blank=True)
     error_message = models.CharField(max_length=256, null=True, blank=True)
