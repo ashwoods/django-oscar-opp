@@ -20,6 +20,7 @@ setup(
     author='Ashley Camba Garrido',
     author_email='a.camba@nousdigital.net',
     packages=find_packages(),
+    include_package_data=True,
     zip_safe=False,
     install_requires=[
         'django-appconf >= 0.4',
